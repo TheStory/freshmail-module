@@ -1,6 +1,6 @@
 {
   "name": "thestory/freshmail-module",
-  "type": "package",
+  "type": "library",
   "description": "Freshmail API communication module for Zend Framework 3 and Zend Expressive",
   "license": "Apache 2.0",
   "require": {
