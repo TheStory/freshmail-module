@@ -9,26 +9,86 @@
 namespace FreshmailTest;
 
 
+use Freshmail\Command\Subscriber\Create;
+use Freshmail\Command\Util\Ping;
+use Freshmail\Exception\FreshmailException;
+use Freshmail\Exception\InvalidCommandException;
 use Freshmail\Model\Configuration;
+use Freshmail\Model\Subscriber;
+use Freshmail\Model\SubscriptionList;
 use Freshmail\Service\Freshmail;
 use PHPUnit\Framework\TestCase;
 
 class FreshmailTest extends TestCase
 {
-    public function testConstructor()
-    {
-        self::assertInstanceOf(Freshmail::class, new Freshmail(new Configuration()));
-    }
+    /**
+     * @var Freshmail
+     */
+    private $freshmail;
 
-    public function testRequest()
+    public function setUp()
     {
         $configuration = new Configuration();
         $configuration->key = '22ad74ff7d6ba2bebe03994313c1e0f0';
         $configuration->secret = '1170c365700aad46d7d83fa8563f8fe0043be8cf';
 
-        $apiService = new Freshmail($configuration);
+        $this->freshmail = new Freshmail($configuration);
+    }
 
-        $apiService->get('/ping');
-        $apiService->post('/ping', ['ping' => 'pong']);
+    public function testConstructor()
+    {
+        $this->assertInstanceOf(Freshmail::class, $this->freshmail);
+    }
+
+    public function testGetRequest()
+    {
+        $responseData = $this->freshmail->get('/ping');
+
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertArrayNotHasKey('status', $responseData);
+    }
+
+    public function testRequestException()
+    {
+        try {
+            $this->freshmail->get('/wrong-path');
+        } catch (\Exception $exception) {
+            $this->assertInstanceOf(FreshmailException::class, $exception);
+        }
+    }
+
+    public function testPostRequest()
+    {
+        $responseData = $this->freshmail->post('/ping', ['ping' => 'pong']);
+
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertArrayHasKey('ping', $responseData['data']);
+    }
+
+    public function testExecuteCommand()
+    {
+        $result = $this->freshmail->executeCommand(new Ping());
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertEquals('pong', $result['data']);
+
+        try {
+            $this->freshmail->executeCommand(new Create(new Subscriber()));
+        } catch (\Exception $exception) {
+            $this->assertInstanceOf(InvalidCommandException::class, $exception);
+        }
+
+        $list = new SubscriptionList();
+        $list->setHash('hash');
+
+        $subscriber = new Subscriber();
+        $subscriber->setEmail('test@email.com')
+            ->setList($list);
+
+        try {
+            $this->freshmail->executeCommand(new Create($subscriber));
+        } catch (\Exception $exception) {
+            $this->assertInstanceOf(FreshmailException::class, $exception);
+        }
     }
 }

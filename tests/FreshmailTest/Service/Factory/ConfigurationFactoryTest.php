@@ -12,9 +12,10 @@ namespace FreshmailTest\Service\Factory;
 use Freshmail\Exception\InvalidConfigurationException;
 use Freshmail\Model\Configuration;
 use Freshmail\Service\Factory\ConfigurationFactory;
+use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\ServiceManager;
 
-class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase
+class ConfigurationFactoryTest extends TestCase
 {
     /**
      * @var ConfigurationFactory

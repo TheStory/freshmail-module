@@ -9,16 +9,21 @@
 namespace Freshmail\Service;
 
 
+use Freshmail\Command\AbstractCommand;
+use Freshmail\Exception\FreshmailException;
+use Freshmail\Exception\InvalidCommandException;
 use Freshmail\Model\Configuration;
 use Zend\Http\Client;
+use Zend\Http\Exception\RuntimeException;
 use Zend\Http\Request;
+use Zend\Http\Response;
 use Zend\Json\Json;
 
 class Freshmail
 {
-    const API_PREFIX = '/rest';
-    const API_BACKEND = 'https://api.freshmail.com' . self::API_PREFIX;
-
+    const PATH_PREFIX = '/rest';
+    const API_BACKEND = 'https://api.freshmail.com' . self::PATH_PREFIX;
+    const STATUS_OK = 200;
     private $params;
     private $config;
     private $signature;
@@ -30,7 +35,7 @@ class Freshmail
 
     public function get($path)
     {
-        $this->request(Request::METHOD_GET, $path);
+        return $this->request(Request::METHOD_GET, $path);
     }
 
     private function request($method, $path, $params = [])
@@ -38,9 +43,12 @@ class Freshmail
         $request = $this->getRequest($method, $path, $params);
 
         $httpClient = new Client();
-        $httpClient
-            ->setAdapter(Client\Adapter\Curl::class)
+        $response = $httpClient->setAdapter(Client\Adapter\Curl::class)
             ->send($request);
+
+        $data = $this->getResponseData($response);
+
+        return $data;
     }
 
     private function getRequest($method, $path, $params)
@@ -73,7 +81,7 @@ class Freshmail
         $signatureData = sprintf(
             '%s%s%s%s%s',
             $this->config->key,
-            self::API_PREFIX,
+            self::PATH_PREFIX,
             $path,
             $this->params,
             $this->config->secret
@@ -82,8 +90,48 @@ class Freshmail
         $this->signature = sha1($signatureData);
     }
 
+    private function getResponseData(Response $response)
+    {
+        $responseContent = $this->parseApiResponse($response);
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode != self::STATUS_OK) {
+            if (isset($responseContent['errors'])) {
+                throw new FreshmailException($statusCode, $responseContent['errors']);
+            } else {
+                throw new RuntimeException('Error response has no errors', $statusCode);
+            }
+        }
+
+        if (isset($responseContent['status'])) {
+            unset($responseContent['status']);
+        }
+
+        return $responseContent;
+    }
+
+    private function parseApiResponse(Response $response)
+    {
+        return Json::decode($response->getBody(), Json::TYPE_ARRAY);
+    }
+
     public function post($path, $params = [])
     {
-        $this->request(Request::METHOD_POST, $path, $params);
+        return $this->request(Request::METHOD_POST, $path, $params);
+    }
+
+    public function executeCommand(AbstractCommand $command)
+    {
+        if (!$command->isValid()) {
+            throw new InvalidCommandException($command);
+        }
+
+        if ($command->getMethod() == AbstractCommand::METHOD_GET) {
+            $result = $this->get($command->getPath());
+        } else {
+            $result = $this->post($command->getPath(), $command->getPath());
+        }
+
+        return $result;
     }
 }

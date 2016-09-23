@@ -10,8 +10,9 @@ namespace FreshmailTest;
 
 
 use Freshmail\Module;
+use PHPUnit\Framework\TestCase;
 
-class ModuleTest extends \PHPUnit_Framework_TestCase
+class ModuleTest extends TestCase
 {
     /**
      * @var Module

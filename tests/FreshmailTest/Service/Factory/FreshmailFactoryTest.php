@@ -12,14 +12,13 @@ namespace FreshmailTest\Service\Factory;
 use Freshmail\Model\Configuration;
 use Freshmail\Service\Factory\FreshmailFactory;
 use Freshmail\Service\Freshmail;
+use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\ServiceManager;
 
-class FreshmailFactoryTest extends \PHPUnit_Framework_TestCase
+class FreshmailFactoryTest extends TestCase
 {
     public function testFactory()
     {
-        $factoryInstance = new FreshmailFactory();
-
         $configuration = new Configuration();
         $configuration->key = 'key';
         $configuration->secret = 'secret';
@@ -27,6 +26,7 @@ class FreshmailFactoryTest extends \PHPUnit_Framework_TestCase
         $configurationStub = $this->createMock(ServiceManager::class);
         $configurationStub->method('get')->willReturn($configuration);
 
+        $factoryInstance = new FreshmailFactory();
         $service = $factoryInstance->__invoke($configurationStub, '');
 
         $this->assertInstanceOf(Freshmail::class, $service);
