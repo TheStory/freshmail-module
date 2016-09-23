@@ -38,7 +38,9 @@ class Freshmail
         $request = $this->getRequest($method, $path, $params);
 
         $httpClient = new Client();
-        $httpClient->send($request);
+        $httpClient
+            ->setAdapter(Client\Adapter\Curl::class)
+            ->send($request);
     }
 
     private function getRequest($method, $path, $params)
