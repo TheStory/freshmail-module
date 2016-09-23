@@ -14,7 +14,7 @@ use Zend\Http\Client;
 use Zend\Http\Request;
 use Zend\Json\Json;
 
-class ApiService
+class Freshmail
 {
     const API_PREFIX = '/rest';
     const API_BACKEND = 'https://api.freshmail.com' . self::API_PREFIX;
