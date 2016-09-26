@@ -24,6 +24,7 @@ class Freshmail
     const PATH_PREFIX = '/rest';
     const API_BACKEND = 'https://api.freshmail.com' . self::PATH_PREFIX;
     const STATUS_OK = 200;
+
     private $params;
     private $config;
     private $signature;

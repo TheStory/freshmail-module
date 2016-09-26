@@ -35,10 +35,10 @@ class SubscriberTest extends TestCase
     public function testStateGetterAndSetter()
     {
         $subscriber = $this->getSubscriber();
-        $result = $subscriber->setState(Subscriber::BOUNCING_HARD);
+        $result = $subscriber->setState(Subscriber::STATE_BOUNCING_HARD);
 
         $this->assertInstanceOf(Subscriber::class, $result);
-        $this->assertEquals(Subscriber::BOUNCING_HARD, $subscriber->getState());
+        $this->assertEquals(Subscriber::STATE_BOUNCING_HARD, $subscriber->getState());
     }
 
     public function testConfirmGetterAndSetter()

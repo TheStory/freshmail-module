@@ -15,17 +15,16 @@ use Zend\Validator\EmailAddress;
 class Subscriber
 {
     const STATE_ACTIVE = 1;
-    const FOR_ACTIVATION = 2;
-    const INACTIVE = 3;
-    const UNSUBSCRIBED = 4;
-    const BOUNCING_SOFT = 5;
-    const BOUNCING_HARD = 6;
+    const STATE_FOR_ACTIVATION = 2;
+    const STATE_INACTIVE = 3;
+    const STATE_UNSUBSCRIBED = 4;
+    const STATE_BOUNCING_SOFT = 5;
+    const STATE_BOUNCING_HARD = 6;
 
     private $email;
     private $list;
     private $state;
     private $confirm;
-    private $customFields;
 
     /**
      * @return string
@@ -42,8 +41,7 @@ class Subscriber
      */
     public function setEmail($email)
     {
-        $emailValidator = new EmailAddress();
-        if (!$emailValidator->isValid($email)) {
+        if (!(new EmailAddress())->isValid($email)) {
             throw new FieldValidationException('E-mail in wrong format');
         }
 
