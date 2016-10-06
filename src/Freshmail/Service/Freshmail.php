@@ -130,7 +130,7 @@ class Freshmail
         if ($command->getMethod() == AbstractCommand::METHOD_GET) {
             $result = $this->get($command->getPath());
         } else {
-            $result = $this->post($command->getPath(), $command->getPath());
+            $result = $this->post($command->getPath(), $command->getData());
         }
 
         return $result;
