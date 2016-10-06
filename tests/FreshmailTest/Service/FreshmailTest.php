@@ -82,7 +82,7 @@ class FreshmailTest extends TestCase
         $list->setHash(getenv('TEST_LIST'));
 
         $subscriber = new Subscriber();
-        $subscriber->setEmail('test@email.com')
+        $subscriber->setEmail(md5(time()) . '@email.com')
             ->setList($list);
 
         try {
