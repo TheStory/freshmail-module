@@ -52,7 +52,7 @@ class Create extends AbstractCommand
     {
         $data = [
             'email' => $this->subscriber->getEmail(),
-            'list' => $this->subscriber->getList(),
+            'list' => $this->subscriber->getList()->getHash(),
             'state' => $this->subscriber->getState(),
             'confirm' => $this->subscriber->getConfirm() ? 1 : 0,
         ];

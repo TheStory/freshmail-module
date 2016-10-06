@@ -79,7 +79,7 @@ class FreshmailTest extends TestCase
         }
 
         $list = new SubscriptionList();
-        $list->setHash('hash');
+        $list->setHash(getenv('TEST_LIST'));
 
         $subscriber = new Subscriber();
         $subscriber->setEmail('test@email.com')
