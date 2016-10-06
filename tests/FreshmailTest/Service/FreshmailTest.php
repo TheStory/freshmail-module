@@ -29,8 +29,8 @@ class FreshmailTest extends TestCase
     public function setUp()
     {
         $configuration = new Configuration();
-        $configuration->key = '22ad74ff7d6ba2bebe03994313c1e0f0';
-        $configuration->secret = '1170c365700aad46d7d83fa8563f8fe0043be8cf';
+        $configuration->key = $this->getEnvironmentVariable('API_KEY');
+        $configuration->secret = $this->getEnvironmentVariable('API_SECRET');
 
         $this->freshmail = new Freshmail($configuration);
     }
@@ -90,5 +90,14 @@ class FreshmailTest extends TestCase
         } catch (\Exception $exception) {
             $this->assertInstanceOf(FreshmailException::class, $exception);
         }
+    }
+
+    private function getEnvironmentVariable($key)
+    {
+        if (!$value = getenv($key)) {
+            throw new \Exception('Environment variable not found');
+        }
+
+        return $value;
     }
 }
