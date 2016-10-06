@@ -11,6 +11,9 @@ namespace Freshmail\Model;
 
 class SubscriptionList
 {
+    /**
+     * @var string
+     */
     private $hash;
 
     /**

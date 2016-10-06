@@ -60,14 +60,7 @@ class Create extends AbstractCommand
         return $this->filterOutEmptyData($data);
     }
 
-    public function isValid()
-    {
-        $this->validate();
-
-        return !$this->hasErrors();
-    }
-
-    private function validate()
+    public function validate()
     {
         if (empty($this->subscriber->getEmail())) {
             $this->addErrorMessage('E-mail is required');

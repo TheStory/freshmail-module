@@ -17,6 +17,13 @@ abstract class AbstractCommand
     private $data;
     private $errorMessages = [];
 
+    public function resetErrors()
+    {
+        $this->errorMessages = [];
+
+        return $this;
+    }
+
     public function getErrorMessages()
     {
         return $this->errorMessages;
@@ -29,7 +36,15 @@ abstract class AbstractCommand
 
     abstract public function getMethod();
 
-    abstract public function isValid();
+    public function isValid()
+    {
+        $this->validate();
+
+        return !$this->hasErrors();
+    }
+
+    abstract public function validate();
+
     abstract public function getPath();
 
     public function getData()

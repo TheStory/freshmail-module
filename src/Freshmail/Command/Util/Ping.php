@@ -18,13 +18,13 @@ class Ping extends AbstractCommand
         return self::METHOD_GET;
     }
 
-    public function isValid()
-    {
-        return true;
-    }
-
     public function getPath()
     {
         return '/ping';
+    }
+
+    public function validate()
+    {
+
     }
 }
