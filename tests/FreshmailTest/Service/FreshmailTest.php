@@ -19,22 +19,8 @@ use Freshmail\Model\SubscriptionList;
 use Freshmail\Service\Freshmail;
 use PHPUnit\Framework\TestCase;
 
-class FreshmailTest extends TestCase
+class FreshmailTest extends FreshmailServiceAwareTest
 {
-    /**
-     * @var Freshmail
-     */
-    private $freshmail;
-
-    public function setUp()
-    {
-        $configuration = new Configuration();
-        $configuration->key = $this->getEnvironmentVariable('API_KEY');
-        $configuration->secret = $this->getEnvironmentVariable('API_SECRET');
-
-        $this->freshmail = new Freshmail($configuration);
-    }
-
     public function testConstructor()
     {
         $this->assertInstanceOf(Freshmail::class, $this->freshmail);
@@ -90,14 +76,5 @@ class FreshmailTest extends TestCase
         } catch (\Exception $exception) {
             $this->assertInstanceOf(FreshmailException::class, $exception);
         }
-    }
-
-    private function getEnvironmentVariable($key)
-    {
-        if (!$value = getenv($key)) {
-            throw new \Exception('Environment variable not found');
-        }
-
-        return $value;
     }
 }

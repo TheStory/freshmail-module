@@ -13,6 +13,7 @@ use Freshmail\Command\AbstractCommand;
 use Freshmail\Exception\FreshmailException;
 use Freshmail\Exception\InvalidCommandException;
 use Freshmail\Model\Configuration;
+use Freshmail\Model\ResponseAwareInterface;
 use Zend\Http\Client;
 use Zend\Http\Exception\RuntimeException;
 use Zend\Http\Request;
@@ -131,6 +132,10 @@ class Freshmail
             $result = $this->get($command->getPath());
         } else {
             $result = $this->post($command->getPath(), $command->getData());
+        }
+
+        if ($command instanceof ResponseAwareInterface) {
+            $command->setResponse($result);
         }
 
         return $result;

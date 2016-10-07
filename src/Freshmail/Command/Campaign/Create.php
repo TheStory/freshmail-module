@@ -11,8 +11,9 @@ namespace Freshmail\Command\Campaign;
 
 use Freshmail\Command\AbstractCommand;
 use Freshmail\Model\Campaign;
+use Freshmail\Model\ResponseAwareInterface;
 
-class Create extends AbstractCommand
+class Create extends AbstractCommand implements ResponseAwareInterface
 {
     /**
      * @var Campaign
@@ -86,5 +87,10 @@ class Create extends AbstractCommand
         ];
 
         return $this->filterOutEmptyData($data);
+    }
+
+    public function setResponse($response)
+    {
+        $this->campaign->setHash($response['data']['hash']);
     }
 }

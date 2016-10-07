@@ -12,9 +12,9 @@ namespace FreshmailTest\Command\Campaign;
 use Freshmail\Command\Campaign\Create;
 use Freshmail\Model\Campaign;
 use Freshmail\Model\SubscriptionList;
-use PHPUnit\Framework\TestCase;
+use FreshmailTest\FreshmailServiceAwareTest;
 
-class CreateTest extends TestCase
+class CreateTest extends FreshmailServiceAwareTest
 {
     public function testConstructor()
     {
@@ -22,6 +22,17 @@ class CreateTest extends TestCase
 
         $this->assertInstanceOf(Create::class, $command);
         $this->assertInstanceOf(Campaign::class, $command->getCampaign());
+    }
+
+    /**
+     * @return Create
+     */
+    protected function getNewCampaignCommand()
+    {
+        $campaign = new Campaign();
+        $command = new Create($campaign);
+
+        return $command;
     }
 
     public function testGetMethod()
@@ -92,32 +103,24 @@ class CreateTest extends TestCase
 
     public function testGetData()
     {
-        $command = $this->getNewCampaignCommand();
-
-        $campaign = $command->getCampaign();
-        $campaign->setName('Name')
-            ->setHtml('<p>HTML</p>')
-            ->setText('Text')
-            ->setList((new SubscriptionList())->setHash('hash'));
+        $command = new Create($this->getValidCampaign());
 
         $data = $command->getData();
 
         $this->assertTrue(is_array($data));
-        $this->assertCount(4, $data);
+        $this->assertCount(5, $data);
         $this->assertArrayHasKey('name', $data);
         $this->assertArrayHasKey('html', $data);
         $this->assertArrayHasKey('text', $data);
         $this->assertArrayHasKey('list', $data);
+        $this->assertArrayHasKey('reply_to', $data);
     }
 
-    /**
-     * @return Create
-     */
-    protected function getNewCampaignCommand()
+    public function testExecute()
     {
-        $campaign = new Campaign();
-        $command = new Create($campaign);
+        $freshmail = $this->freshmail;
+        $command = new Create($this->getValidCampaign());
 
-        return $command;
+        $freshmail->executeCommand($command);
     }
 }

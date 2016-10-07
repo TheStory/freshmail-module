@@ -11,6 +11,8 @@ namespace Freshmail\Model;
 
 class Campaign extends AbstractApiModel
 {
+    private $hash;
+
     /**
      * @var string
      */
@@ -236,6 +238,25 @@ class Campaign extends AbstractApiModel
         $this->validateUrl($resignLink);
 
         $this->resignLink = $resignLink;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param string $hash
+     * @return Campaign
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
 
         return $this;
     }
