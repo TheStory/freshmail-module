@@ -10,6 +10,7 @@ namespace FreshmailTest;
 
 
 use Freshmail\Command\Subscriber\Create;
+use Freshmail\Command\Subscriber\Delete;
 use Freshmail\Command\Util\Ping;
 use Freshmail\Exception\FreshmailException;
 use Freshmail\Exception\InvalidCommandException;
@@ -68,13 +69,12 @@ class FreshmailTest extends FreshmailServiceAwareTest
         $list->setHash(getenv('TEST_LIST'));
 
         $subscriber = new Subscriber();
-        $subscriber->setEmail(md5(time()) . '@email.com')
+        $subscriber->setEmail($this->generateRandomEmail())
             ->setList($list);
 
-        try {
-            $this->freshmail->executeCommand(new Create($subscriber));
-        } catch (\Exception $exception) {
-            $this->assertInstanceOf(FreshmailException::class, $exception);
-        }
+        $this->freshmail->executeCommand(new Create($subscriber));
+
+        $deleteCommand = new Delete($subscriber);
+        $this->freshmail->executeCommand($deleteCommand);
     }
 }

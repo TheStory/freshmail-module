@@ -51,4 +51,9 @@ abstract class FreshmailServiceAwareTest extends TestCase
 
         return $campaign;
     }
+
+    protected function generateRandomEmail()
+    {
+        return md5(time()) . '@email.com';
+    }
 }
