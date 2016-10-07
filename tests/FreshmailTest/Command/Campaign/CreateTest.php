@@ -10,6 +10,7 @@ namespace FreshmailTest\Command\Campaign;
 
 
 use Freshmail\Command\Campaign\Create;
+use Freshmail\Command\Campaign\Delete;
 use Freshmail\Model\Campaign;
 use Freshmail\Model\SubscriptionList;
 use FreshmailTest\FreshmailServiceAwareTest;
@@ -119,8 +120,13 @@ class CreateTest extends FreshmailServiceAwareTest
     public function testExecute()
     {
         $freshmail = $this->freshmail;
-        $command = new Create($this->getValidCampaign());
+        $createCommand = new Create($this->getValidCampaign());
 
-        $freshmail->executeCommand($command);
+        $freshmail->executeCommand($createCommand);
+
+        $this->assertNotEmpty($createCommand->getCampaign()->getHash());
+
+        $deleteCommand = new Delete($createCommand->getCampaign());
+        $freshmail->executeCommand($deleteCommand);
     }
 }

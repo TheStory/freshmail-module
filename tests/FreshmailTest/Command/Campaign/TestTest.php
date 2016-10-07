@@ -10,6 +10,7 @@ namespace FreshmailTest\Command\Campaign;
 
 
 use Freshmail\Command\Campaign\Create;
+use Freshmail\Command\Campaign\Delete;
 use Freshmail\Command\Campaign\Test;
 use Freshmail\Model\Campaign;
 use FreshmailTest\FreshmailServiceAwareTest;
@@ -38,6 +39,9 @@ class TestTest extends FreshmailServiceAwareTest
         $this->freshmail->executeCommand($command);
 
         $this->assertNotNull($campaign->getHash());
+
+        $deleteCommand = new Delete($campaign);
+        $this->freshmail->executeCommand($deleteCommand);
     }
 
     public function testValidate()
