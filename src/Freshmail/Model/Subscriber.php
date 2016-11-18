@@ -22,6 +22,7 @@ class Subscriber extends AbstractApiModel
 
     private $state;
     private $confirm;
+    private $customFields;
 
     /**
      * @var string
@@ -89,6 +90,30 @@ class Subscriber extends AbstractApiModel
         }
 
         $this->confirm = $confirm == true ? 1 : 0;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCustomFields()
+    {
+        return $this->customFields;
+    }
+
+    /**
+     * @param array $customFields
+     * @return $this
+     * @throws FieldValidationException
+     */
+    public function setCustomFields($customFields)
+    {
+        if (!is_array($customFields)) {
+            throw new FieldValidationException('Custom fields must be an array');
+        }
+
+        $this->customFields = $customFields;
 
         return $this;
     }

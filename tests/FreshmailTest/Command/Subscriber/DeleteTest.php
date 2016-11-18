@@ -77,7 +77,7 @@ class DeleteTest extends FreshmailServiceAwareTest
         $createCommand = new Create($subscriber);
         $this->freshmail->executeCommand($createCommand);
 
-        $deleteCommand = new Delete($subscriber);;
+        $deleteCommand = new Delete($subscriber);
         $this->freshmail->executeCommand($deleteCommand);
     }
 }

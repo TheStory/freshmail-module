@@ -57,6 +57,17 @@ class SubscriberTest extends TestCase
         }
     }
 
+    public function testSetCustomFields()
+    {
+        $subscriber = $this->getSubscriber();
+        $subscriber->setCustomFields(['test' => 'test']);
+
+        $this->assertArrayHasKey('test', $subscriber->getCustomFields());
+
+        $this->expectException(FieldValidationException::class);
+        $subscriber->setCustomFields('wrong_custom_field_value');
+    }
+
     /**
      * @return Subscriber
      */

@@ -55,6 +55,7 @@ class Create extends AbstractCommand
             'list' => $this->subscriber->getList()->getHash(),
             'state' => $this->subscriber->getState(),
             'confirm' => $this->subscriber->getConfirm() ? 1 : 0,
+            'custom_fields' => $this->subscriber->getCustomFields(),
         ];
 
         return $this->filterOutEmptyData($data);

@@ -13,9 +13,9 @@ use Freshmail\Command\AbstractCommand;
 use Freshmail\Command\Subscriber\Create;
 use Freshmail\Model\Subscriber;
 use Freshmail\Model\SubscriptionList;
-use PHPUnit\Framework\TestCase;
+use FreshmailTest\FreshmailServiceAwareTest;
 
-class CreateTest extends TestCase
+class CreateTest extends FreshmailServiceAwareTest
 {
     public function testConstructor()
     {
@@ -42,6 +42,7 @@ class CreateTest extends TestCase
 
         $subscriber = new Subscriber();
         $subscriber->setEmail('test@email.com')
+            ->setCustomFields(['test_field' => 'test_value'])
             ->setList($subscriptionList);
 
         return $subscriber;
