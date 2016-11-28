@@ -66,14 +66,10 @@ class Freshmail
         $httpClient = new Client();
         $httpClient->setAdapter(Client\Adapter\Socket::class)
             ->setOptions([
+                'ssltransport'       => 'tls',
                 'sslverifypeer'      => false,
                 'sslallowselfsigned' => true,
                 'sslusecontext'      => true,
-                'ssl'                => [
-                    'verify_peer'       => false,
-                    'allow_self_signed' => true,
-                    'capture_peer_cert' => true,
-                ],
             ]);
 
         $response = $httpClient->send($request);
