@@ -45,7 +45,7 @@ class Freshmail
         $request = $this->getRequest($method, $path, $params);
 
         $httpClient = new Client();
-        $response = $httpClient->setAdapter(Client\Adapter\Curl::class)
+        $response = $httpClient->setAdapter(Client\Adapter\Socket::class)
             ->send($request);
 
         $data = $this->getResponseData($response);
