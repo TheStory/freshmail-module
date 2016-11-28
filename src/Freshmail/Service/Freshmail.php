@@ -35,6 +35,25 @@ class Freshmail
         $this->config = $config;
     }
 
+    public function executeCommand(AbstractCommand $command)
+    {
+        if (!$command->isValid()) {
+            throw new InvalidCommandException($command);
+        }
+
+        if ($command->getMethod() == AbstractCommand::METHOD_GET) {
+            $result = $this->get($command->getPath());
+        } else {
+            $result = $this->post($command->getPath(), $command->getData());
+        }
+
+        if ($command instanceof ResponseAwareInterface) {
+            $command->setResponse($result);
+        }
+
+        return $result;
+    }
+
     public function get($path)
     {
         return $this->request(Request::METHOD_GET, $path);
@@ -45,8 +64,14 @@ class Freshmail
         $request = $this->getRequest($method, $path, $params);
 
         $httpClient = new Client();
-        $response = $httpClient->setAdapter(Client\Adapter\Socket::class)
-            ->send($request);
+        $httpClient->setAdapter(Client\Adapter\Socket::class)
+            ->setOptions([
+                'sslverifypeer'      => false,
+                'sslallowselfsigned' => true,
+                'sslusecontext'      => true,
+            ]);
+
+        $response = $httpClient->send($request);
 
         $data = $this->getResponseData($response);
 
@@ -120,24 +145,5 @@ class Freshmail
     public function post($path, $params = [])
     {
         return $this->request(Request::METHOD_POST, $path, $params);
-    }
-
-    public function executeCommand(AbstractCommand $command)
-    {
-        if (!$command->isValid()) {
-            throw new InvalidCommandException($command);
-        }
-
-        if ($command->getMethod() == AbstractCommand::METHOD_GET) {
-            $result = $this->get($command->getPath());
-        } else {
-            $result = $this->post($command->getPath(), $command->getData());
-        }
-
-        if ($command instanceof ResponseAwareInterface) {
-            $command->setResponse($result);
-        }
-
-        return $result;
     }
 }
